@@ -1,0 +1,85 @@
+# depslib dependency file v1.0
+1774782938 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\affichage.c
+	<allegro.h>
+	"affichage.h"
+	"constantes.h"
+	"menu.h"
+	"carte.h"
+	"ressources.h"
+	"options.h"
+
+1774782478 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\affichage.h
+
+1774480239 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\types.h
+	<stdbool.h>
+
+1774783017 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ihm.c
+	<allegro.h>
+	<math.h>
+	"ihm.h"
+	"menu.h"
+	"carte.h"
+	"ressources.h"
+	"options.h"
+
+1774782498 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ihm.h
+	"constantes.h"
+
+1774783010 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\main.c
+	<allegro.h>
+	"constantes.h"
+	"init.h"
+	"menu.h"
+	"carte.h"
+	"ihm.h"
+	"affichage.h"
+	"ressources.h"
+	"options.h"
+
+1774478744 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\logique.h
+	"types.h"
+	"ihm.h"
+
+1774479101 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\logique.c
+	"logique.h"
+	<math.h>
+
+1774479933 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\sauvegarde.c
+	<stdio.h>
+	<string.h>
+	"types.h"
+
+1774782896 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\menu.c
+	"menu.h"
+
+1774703342 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\menu.h
+	"constantes.h"
+
+1774782087 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\constantes.h
+
+1774719408 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\init.c
+	<allegro.h>
+	<stdio.h>
+	"init.h"
+
+1774520852 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\init.h
+
+1774745236 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ressources.h
+	<allegro.h>
+
+1774743092 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ressources.c
+	"ressources.h"
+
+1774744302 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\carte.h
+	"constantes.h"
+
+1774744318 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\carte.c
+	"carte.h"
+	<stdlib.h>
+	<allegro.h>
+
+1774782847 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\options.h
+
+1774782859 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\options.c
+	"options.h"
+
