@@ -1,41 +1,32 @@
 #include "options.h"
 
-static int vol_musique = 150;
-static int vol_sfx = 255;
-static int res_w = 800;
-static int res_h = 600;
-
-int flag_resolution_changee = 0;
 int flag_musique_changee = 0;
+int flag_resolution_changee = 0;
 
-int get_vol_musique() { return vol_musique; }
+static int volume_musique = 128;
+static int volume_sfx = 128;
+static int plein_ecran = 0; // 0 = Fenêtré, 1 = Plein écran
 
-// NOUVEAU : Application directe de la valeur avec sécurité
-void set_vol_musique(int val) {
-    vol_musique = val;
-    if(vol_musique < 0) vol_musique = 0;
-    if(vol_musique > 255) vol_musique = 255;
-    flag_musique_changee = 1; // On prévient le main qu'il faut ajuster le son
+int get_vol_musique() { return volume_musique; }
+void set_vol_musique(int v) {
+    volume_musique = v;
+    if(volume_musique < 0) volume_musique = 0;
+    if(volume_musique > 255) volume_musique = 255;
+    flag_musique_changee = 1;
 }
 
-int get_vol_sfx() { return vol_sfx; }
-
-void set_vol_sfx(int val) {
-    vol_sfx = val;
-    if(vol_sfx < 0) vol_sfx = 0;
-    if(vol_sfx > 255) vol_sfx = 255;
+int get_vol_sfx() { return volume_sfx; }
+void set_vol_sfx(int v) {
+    volume_sfx = v;
+    if(volume_sfx < 0) volume_sfx = 0;
+    if(volume_sfx > 255) volume_sfx = 255;
 }
 
-void toggle_resolution() {
-    if (res_w == 800) {
-        res_w = 1024;
-        res_h = 768;
-    } else {
-        res_w = 800;
-        res_h = 600;
-    }
+int get_res_w() { return 800; } // Taille par défaut de la fenêtre
+int get_res_h() { return 600; }
+
+int is_plein_ecran() { return plein_ecran; }
+void toggle_plein_ecran() {
+    plein_ecran = !plein_ecran;
     flag_resolution_changee = 1;
 }
-
-int get_res_w() { return res_w; }
-int get_res_h() { return res_h; }

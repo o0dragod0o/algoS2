@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1774782938 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\affichage.c
+1775647874 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\affichage.c
 	<allegro.h>
 	"affichage.h"
 	"constantes.h"
@@ -7,13 +7,15 @@
 	"carte.h"
 	"ressources.h"
 	"options.h"
+	"logique.h"
+	"sauvegarde.h"
 
-1774782478 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\affichage.h
+1775648972 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\affichage.h
 
 1774480239 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\types.h
 	<stdbool.h>
 
-1774783017 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ihm.c
+1775647895 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ihm.c
 	<allegro.h>
 	<math.h>
 	"ihm.h"
@@ -21,11 +23,13 @@
 	"carte.h"
 	"ressources.h"
 	"options.h"
+	"logique.h"
+	"sauvegarde.h"
 
-1774782498 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ihm.h
+1775647885 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\ihm.h
 	"constantes.h"
 
-1774783010 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\main.c
+1775648345 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\main.c
 	<allegro.h>
 	"constantes.h"
 	"init.h"
@@ -35,27 +39,32 @@
 	"affichage.h"
 	"ressources.h"
 	"options.h"
-
-1774478744 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\logique.h
-	"types.h"
-	"ihm.h"
-
-1774479101 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\logique.c
 	"logique.h"
-	<math.h>
+	"sauvegarde.h"
 
-1774479933 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\sauvegarde.c
-	<stdio.h>
-	<string.h>
-	"types.h"
-
-1774782896 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\menu.c
-	"menu.h"
-
-1774703342 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\menu.h
+1775648939 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\logique.h
 	"constantes.h"
 
-1774782087 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\constantes.h
+1775649369 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\logique.c
+	"logique.h"
+	"sauvegarde.h"
+	<allegro.h>
+	<stdlib.h>
+	<time.h>
+
+1775647831 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\sauvegarde.c
+	"sauvegarde.h"
+	<stdio.h>
+	<stdlib.h>
+
+1775647944 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\menu.c
+	"menu.h"
+	<string.h>
+
+1775647780 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\menu.h
+	"constantes.h"
+
+1775647770 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\constantes.h
 
 1774719408 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\init.c
 	<allegro.h>
@@ -78,8 +87,10 @@
 	<stdlib.h>
 	<allegro.h>
 
-1774782847 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\options.h
+1775646696 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\options.h
 
-1774782859 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\options.c
+1775646703 source:c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\options.c
 	"options.h"
+
+1775647822 c:\users\kylia\documents\cours\informatique\programmes\projetalgos2\sauvegarde.h
 
