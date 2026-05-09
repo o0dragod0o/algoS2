@@ -5,9 +5,11 @@ typedef enum {
     ETAT_MENU_PRINCIPAL,
     ETAT_REGLES,
     ETAT_CARTE_MONDE,
-    ETAT_CHARGER_PARTIE, // NOUVEAU : Remplace ETAT_SAUVEGARDE
+    ETAT_CHARGER_PARTIE,
     ETAT_OPTIONS,
     ETAT_JEU_EN_COURS,
+    ETAT_PAUSE,           // NOUVEAU : Menu Pause
+    ETAT_ECRAN_VICTOIRE,  // NOUVEAU : Ecran de fin de niveau
     ETAT_ECRAN_DEFAITE,
     ETAT_QUITTER
 } EtatJeu;

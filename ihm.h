@@ -9,6 +9,8 @@ EtatJeu gerer_ihm_generique_retour(EtatJeu etat_actuel);
 EtatJeu gerer_ihm_options(EtatJeu etat_actuel);
 EtatJeu gerer_ihm_ecran_defaite(EtatJeu etat_actuel);
 EtatJeu gerer_ihm_charger_partie(EtatJeu etat_actuel); // NOUVEAU
+EtatJeu gerer_ihm_ecran_victoire(EtatJeu etat_courant);
+EtatJeu gerer_ihm_pause(EtatJeu etat_courant);
 
 int souris_dans_rect(int x, int y, int w, int h, int mx, int my);
 

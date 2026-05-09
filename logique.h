@@ -3,43 +3,51 @@
 
 #include "constantes.h"
 
-#define MAX_BALLONS 50 // Augmenté pour supporter les divisions
-#define MAX_TIRS 5
-#define MAX_RAYONS 3   // NOUVEAU : Nombre max de rayons mortels simultanés
+#define MAX_BALLONS 50
+#define MAX_TIRS 10 // 5 par joueur
+#define MAX_RAYONS 10
+#define MAX_EXPLOSIONS 20
 
-// NOUVEAU : Enumération pour différencier les bulles
-typedef enum {
-    BULLE_CLASSIQUE, // Rouge : se divise en 2
-    BULLE_MULTI,     // Violette : se divise en 4
-    BULLE_EXPLOSIVE  // Grise : éclate en 6 très petites bulles
-} TypeBulle;
+typedef enum { BULLE_CLASSIQUE, BULLE_MULTI, BULLE_EXPLOSIVE } TypeBulle;
 
-typedef struct { float x, y; int w, h; float vitesse; } Joueur;
-typedef struct { float x, y; int w, h; float vitesse; int actif; } Tir;
-
+// Chaque joueur a ses propres vies et son état de vie
 typedef struct {
     float x, y;
-    int rayon;
-    float vx, vy;
+    int w, h;
+    float vitesse;
+    int timer_invincibilite;
     int actif;
-    TypeBulle type; // NOUVEAU
-} Ballon;
+    int vies;
+    int est_mort;
+} Joueur;
 
-// NOUVEAU : Structure pour les rayons (lasers)
+typedef struct { float x, y; int w, h; float vitesse; int actif; int id_joueur; } Tir;
+typedef struct { float x, y; int rayon; float vx, vy; int actif; TypeBulle type; } Ballon;
+typedef struct { int x, w; int timer_avertissement; int timer_actif; int actif; } RayonDanger;
+typedef struct { float x, y; int taille; int frame_actuelle; int timer_frame; int actif; } Explosion;
+
 typedef struct {
-    int x, w;                // Position X et largeur du rayon (couvre tout l'écran en hauteur)
-    int timer_avertissement; // Temps restant de l'aura rouge (inoffensif)
-    int timer_actif;         // Temps restant du rayon mortel
+    float x, y; int w, h;
+    int pv_max; int pv_actuel;
+    int phase;
+    float vx, vy;
+    int timer_attaque;
     int actif;
-} RayonDanger;
+} Boss;
 
 void initialiser_niveau(int numero_niveau, int ecran_w, int ecran_h);
 EtatJeu mettre_a_jour_jeu(EtatJeu etat_courant, int ecran_w, int ecran_h);
 
-Joueur* get_joueur();
+Joueur* get_joueurs();
 Tir* get_tirs();
 Ballon* get_ballons();
-RayonDanger* get_rayons(); // NOUVEAU
+RayonDanger* get_rayons();
+Explosion* get_explosions();
+Boss* get_boss();
+
+// Gestion du mode choisi au menu
+void set_nombre_joueurs_mode(int n);
+int get_nombre_joueurs_mode();
 
 int get_score_actuel();
 int get_timer_debut();

@@ -15,4 +15,7 @@ void dessiner_options();
 void dessiner_jeu_en_cours();
 void dessiner_ecran_defaite();
 
+void dessiner_pause();
+void dessiner_ecran_victoire();
+
 #endif

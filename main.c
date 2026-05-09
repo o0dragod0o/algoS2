@@ -15,10 +15,12 @@ int main() {
     initialiser_affichage(SCREEN_W, SCREEN_H);
     initialiser_ressources();
     initialiser_boutons_menu(SCREEN_W, SCREEN_H);
+
+    // CORRECTION ICI : le bon nom de la fonction avec ses paramètres
     initialiser_donnees_carte(SCREEN_W, SCREEN_H);
 
     charger_scores();
-    lire_infos_sauvegardes(); // <-- C'EST LA SEULE LIGNE DE CHARGEMENT DE PROGRESSION ICI
+    lire_infos_sauvegardes();
 
     EtatJeu etat_courant = ETAT_MENU_PRINCIPAL;
 
@@ -42,8 +44,11 @@ int main() {
                 break;
 
             case ETAT_JEU_EN_COURS: etat_courant = mettre_a_jour_jeu(etat_courant, SCREEN_W, SCREEN_H); break;
-            // NOUVEAU :
             case ETAT_ECRAN_DEFAITE: etat_courant = gerer_ihm_ecran_defaite(etat_courant); break;
+
+            // NOUVEAUX ETATS
+            case ETAT_PAUSE: etat_courant = gerer_ihm_pause(etat_courant); break;
+            case ETAT_ECRAN_VICTOIRE: etat_courant = gerer_ihm_ecran_victoire(etat_courant); break;
             default: break;
         }
 
@@ -74,9 +79,13 @@ int main() {
             case ETAT_CARTE_MONDE: dessiner_carte_monde(); break;
             case ETAT_OPTIONS: dessiner_options(); break;
             case ETAT_REGLES: dessiner_regles(); break;
-            case ETAT_CHARGER_PARTIE: dessiner_charger_partie(); break; // <-- C'est ici !
+            case ETAT_CHARGER_PARTIE: dessiner_charger_partie(); break;
             case ETAT_JEU_EN_COURS: dessiner_jeu_en_cours(); break;
             case ETAT_ECRAN_DEFAITE: dessiner_ecran_defaite(); break;
+
+            // NOUVEAUX ETATS
+            case ETAT_PAUSE: dessiner_pause(); break;
+            case ETAT_ECRAN_VICTOIRE: dessiner_ecran_victoire(); break;
             default: break;
         }
 
@@ -84,7 +93,8 @@ int main() {
             synchroniser_affichage();
         }
 
-        rest(10);
+        // OPTIMISATION DU LAG (~60 FPS)
+        rest(16);
     }
 
     if (mus_menu) stop_sample(mus_menu);

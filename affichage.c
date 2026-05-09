@@ -99,26 +99,38 @@ void dessiner_carte_monde() {
     }
 }
 
-// --- NOUVEAU MENU DE CHARGEMENT ---
 void dessiner_charger_partie() {
     clear_to_color(buffer, makecol(30, 30, 80));
-    textout_centre_ex(buffer, font, "REPRENDRE UNE PARTIE", SCREEN_W/2, 50, makecol(255, 255, 0), -1);
 
-    int cx = SCREEN_W / 2;
-    for(int i=0; i<4; i++) {
-        int by = 130 + i * 90; // Espacement vertical
-        rectfill(buffer, cx - 180, by, cx + 180, by + 70, makecol(50, 50, 100));
-        rect(buffer, cx - 180, by, cx + 180, by + 70, makecol(255, 255, 255));
+    // Déclaration pour récupérer le mode (0=Nouveau, 2=Reprendre)
+    extern int mode_action_saisie;
 
-        if(get_info_save_existe(i+1)) {
-            textprintf_centre_ex(buffer, font, cx, by + 15, makecol(255, 255, 0), -1, "- EMPLACEMENT %d -", i+1);
-            textprintf_centre_ex(buffer, font, cx, by + 40, makecol(255, 255, 255), -1, "Niveau: %d   |   Score Total: %d", get_info_save_niveau(i+1), get_info_save_score(i+1));
-        } else {
-            textprintf_centre_ex(buffer, font, cx, by + 30, makecol(150, 150, 150), -1, "--- EMPLACEMENT VIDE ---");
-        }
+    if (mode_action_saisie == 2) {
+        textout_centre_ex(buffer, font, "REPRENDRE UNE PARTIE", SCREEN_W/2, 50, makecol(255, 255, 0), -1);
+    } else {
+        textout_centre_ex(buffer, font, "NOUVELLE PARTIE", SCREEN_W/2, 50, makecol(255, 255, 0), -1);
     }
 
-    textout_centre_ex(buffer, font, "Appuyez sur 'R' ou 'ESC' pour revenir", cx, SCREEN_H - 40, makecol(255, 255, 0), -1);
+    int cx = SCREEN_W / 2;
+    int cy = SCREEN_H / 2;
+
+    textout_centre_ex(buffer, font, "ENTREZ VOTRE PSEUDO :", cx, cy - 40, makecol(255, 255, 255), -1);
+
+    // Rectangle pour la saisie
+    rectfill(buffer, cx - 150, cy - 15, cx + 150, cy + 25, makecol(0, 0, 0));
+    rect(buffer, cx - 150, cy - 15, cx + 150, cy + 25, makecol(255, 255, 255));
+
+    // Affichage du pseudo avec un petit underscore
+    char affichage_pseudo[30];
+    sprintf(affichage_pseudo, "%s_", pseudo_actuel);
+    textout_centre_ex(buffer, font, affichage_pseudo, cx, cy, makecol(0, 255, 0), -1);
+
+    if (message_erreur_pseudo) {
+        textout_centre_ex(buffer, font, "ERREUR: PSEUDO INTROUVABLE !", cx, cy + 50, makecol(255, 0, 0), -1);
+    }
+
+    textout_centre_ex(buffer, font, "Appuyez sur ENTRER pour valider", cx, SCREEN_H - 80, makecol(200, 200, 200), -1);
+    textout_centre_ex(buffer, font, "Appuyez sur 'ESC' pour revenir", cx, SCREEN_H - 50, makecol(255, 255, 0), -1);
 }
 
 void dessiner_options() {
@@ -155,83 +167,116 @@ void dessiner_regles() {
 }
 
 void dessiner_jeu_en_cours() {
-    // 0. FOND DE L'ECRAN
-    clear_to_color(buffer, makecol(135, 206, 235));
+    int niveau = get_niveau_en_cours();
 
-    Joueur* p = get_joueur();
+    if (niveau >= 1 && niveau <= 4 && img_fonds_niveaux[niveau - 1] != NULL) {
+        stretch_blit(img_fonds_niveaux[niveau - 1], buffer, 0, 0, img_fonds_niveaux[niveau - 1]->w, img_fonds_niveaux[niveau - 1]->h, 0, 0, SCREEN_W, SCREEN_H);
+    } else {
+        clear_to_color(buffer, makecol(135, 206, 235));
+    }
+
+    Joueur* jrs = get_joueurs();
     Tir* t = get_tirs();
     Ballon* b = get_ballons();
     RayonDanger* r = get_rayons();
+    Explosion* e = get_explosions();
+    Boss* boss = get_boss();
 
-    // 1. DESSINER LES RAYONS LASERS EN ARRIERE PLAN (SANS TRANSPARENCE)
     for (int i = 0; i < MAX_RAYONS; i++) {
         if (r[i].actif) {
             if (r[i].timer_avertissement > 0) {
-                // AVERTISSEMENT : Fond rose pâle
                 rectfill(buffer, r[i].x, 0, r[i].x + r[i].w, SCREEN_H, makecol(255, 200, 200));
-
-                // Dessin de hachures diagonales pour marquer la zone de danger
-                for(int y = -r[i].w; y < SCREEN_H; y += 30) {
-                    line(buffer, r[i].x, y, r[i].x + r[i].w, y + r[i].w, makecol(255, 100, 100));
-                    line(buffer, r[i].x, y+1, r[i].x + r[i].w, y + r[i].w + 1, makecol(255, 100, 100));
-                }
+                for(int y = -r[i].w; y < SCREEN_H; y += 30) line(buffer, r[i].x, y, r[i].x + r[i].w, y + r[i].w, makecol(255, 100, 100));
             } else if (r[i].timer_actif > 0) {
-                // RAYON MORTEL : Rouge vif intense
                 rectfill(buffer, r[i].x, 0, r[i].x + r[i].w, SCREEN_H, makecol(255, 0, 0));
-
-                // Bordures Jaunes épaisses
                 rect(buffer, r[i].x, 0, r[i].x + r[i].w, SCREEN_H, makecol(255, 255, 0));
-                rect(buffer, r[i].x + 1, 0, r[i].x + r[i].w - 1, SCREEN_H, makecol(255, 255, 0));
-                rect(buffer, r[i].x + 2, 0, r[i].x + r[i].w - 2, SCREEN_H, makecol(255, 255, 0));
             }
         }
     }
 
-    // 2. DESSINER LE JOUEUR ET LES TIRS
-    rectfill(buffer, p->x, p->y, p->x + p->w, p->y + p->h, makecol(0, 0, 200));
+    if (boss->actif) {
+        if (img_boss != NULL) stretch_sprite(buffer, img_boss, boss->x, boss->y, boss->w, boss->h);
+        else rectfill(buffer, boss->x, boss->y, boss->x + boss->w, boss->y + boss->h, makecol(50, 0, 0));
+
+        int barre_w = 400; int hp_w = (boss->pv_actuel * barre_w) / boss->pv_max; if (hp_w < 0) hp_w = 0;
+        int bx = (SCREEN_W - barre_w) / 2;
+        rectfill(buffer, bx, 10, bx + barre_w, 25, makecol(100, 0, 0));
+        rectfill(buffer, bx, 10, bx + hp_w, 25, makecol(255, 0, 0));
+        rect(buffer, bx, 10, bx + barre_w, 25, makecol(255, 255, 255));
+        if (boss->phase == 3) textout_centre_ex(buffer, font, "!!! ENRAGE !!!", SCREEN_W/2, 14, makecol(255, 255, 0), -1);
+        else textout_centre_ex(buffer, font, "LE ROI DES BULLES", SCREEN_W/2, 14, makecol(255, 255, 255), -1);
+    }
+
+    // --- DESSIN DES JOUEURS (Correction : Retrait de la transparence et taille respectée) ---
+    for (int p = 0; p < 2; p++) {
+        if (jrs[p].actif && !jrs[p].est_mort) {
+            if (jrs[p].timer_invincibilite == 0 || (jrs[p].timer_invincibilite % 10 < 5)) {
+                if (img_player != NULL) {
+                    // On utilise les dimensions w et h définies dans la logique (20x26)
+                    stretch_sprite(buffer, img_player, jrs[p].x, jrs[p].y, jrs[p].w, jrs[p].h);
+                } else {
+                    int col = (p == 0) ? makecol(0, 0, 200) : makecol(200, 0, 0);
+                    rectfill(buffer, jrs[p].x, jrs[p].y, jrs[p].x + jrs[p].w, jrs[p].y + jrs[p].h, col);
+                }
+                textout_centre_ex(buffer, font, (p == 0) ? "P1" : "P2", jrs[p].x + jrs[p].w / 2, jrs[p].y - 15, makecol(255, 255, 255), -1);
+            }
+        }
+    }
 
     for (int i = 0; i < MAX_TIRS; i++) {
-        if (t[i].actif) rectfill(buffer, t[i].x, t[i].y, t[i].x + t[i].w, t[i].y + t[i].h, makecol(255, 255, 0));
-    }
-
-    // 3. DESSINER LES BULLES AVEC LEURS COULEURS SPECIFIQUES
-    for (int i = 0; i < MAX_BALLONS; i++) {
-        if (b[i].actif) {
-            int col_interieur, col_contour;
-
-            switch(b[i].type) {
-                case BULLE_CLASSIQUE:
-                    col_interieur = makecol(200, 30, 30); col_contour = makecol(0, 0, 0);
-                    break;
-                case BULLE_MULTI:
-                    col_interieur = makecol(150, 30, 200); col_contour = makecol(255, 255, 255);
-                    break;
-                case BULLE_EXPLOSIVE:
-                    col_interieur = makecol(100, 100, 100); col_contour = makecol(255, 100, 0); // Gris foncé
-                    break;
-                default:
-                    col_interieur = makecol(200, 30, 30); col_contour = makecol(0, 0, 0);
-            }
-
-            circlefill(buffer, b[i].x, b[i].y, b[i].rayon, col_interieur);
-            circle(buffer, b[i].x, b[i].y, b[i].rayon, col_contour);
-            circle(buffer, b[i].x, b[i].y, b[i].rayon - 1, col_contour); // Contour plus épais
+        if (t[i].actif) {
+            int col_tir = (t[i].id_joueur == 0) ? makecol(255, 255, 0) : makecol(255, 150, 0);
+            rectfill(buffer, t[i].x, t[i].y, t[i].x + t[i].w, t[i].y + t[i].h, col_tir);
         }
     }
 
-    // 4. HUD ET INTERFACE
-    textprintf_ex(buffer, font, 20, 20, makecol(255, 255, 255), -1, "SCORE TOTAL : %d", get_score_global_partie() + get_score_actuel());
-    textprintf_ex(buffer, font, 20, 40, makecol(255, 255, 0), -1, "SCORE MANCHE: %d", get_score_actuel());
-    textprintf_ex(buffer, font, 20, 60, makecol(255, 255, 0), -1, "OBJECTIF : %d / %d", get_objectif_actuel(), get_objectif_max());
+    for (int i = 0; i < MAX_BALLONS; i++) {
+        if (b[i].actif) {
+            BITMAP* sprite_bulle = NULL;
+            int col_secours = makecol(200, 30, 30);
 
-    // DECOMPTE DU DEBUT
-    int timer = get_timer_debut();
-    if (timer > 0) {
-        int secondes = (timer / 40) + 1;
+            if (b[i].type == BULLE_CLASSIQUE) { sprite_bulle = img_bulle_rouge; col_secours = makecol(200, 30, 30); }
+            else if (b[i].type == BULLE_MULTI) { sprite_bulle = img_bulle_violette; col_secours = makecol(150, 30, 200); }
+            else if (b[i].type == BULLE_EXPLOSIVE) { sprite_bulle = img_bulle_jaune; col_secours = makecol(200, 200, 30); }
 
-        // On évite la transparence ici aussi au cas où pour le texte central
-        textprintf_centre_ex(buffer, font, SCREEN_W/2, SCREEN_H/2, makecol(255, 0, 0), makecol(0,0,0), " - %d - ", secondes);
+            if (sprite_bulle != NULL) {
+                stretch_sprite(buffer, sprite_bulle, b[i].x - b[i].rayon, b[i].y - b[i].rayon, b[i].rayon * 2, b[i].rayon * 2);
+            } else {
+                circlefill(buffer, b[i].x, b[i].y, b[i].rayon, col_secours);
+                circle(buffer, b[i].x, b[i].y, b[i].rayon, makecol(0,0,0));
+            }
+        }
     }
+
+    for (int i = 0; i < MAX_EXPLOSIONS; i++) {
+        if (e[i].actif && img_explosion[e[i].frame_actuelle] != NULL) {
+            stretch_sprite(buffer, img_explosion[e[i].frame_actuelle], e[i].x - (e[i].taille / 2), e[i].y - (e[i].taille / 2), e[i].taille, e[i].taille);
+        }
+    }
+
+    textprintf_ex(buffer, font, 20, 20, makecol(255, 255, 255), -1, "SCORE TOTAL : %d", get_score_global_partie() + get_score_actuel());
+
+    if (niveau == 4) {
+        for(int p=0; p < get_nombre_joueurs_mode(); p++) {
+            int x_barre = (p == 0) ? 50 : SCREEN_W - 250;
+            int y_barre = SCREEN_H - 30;
+
+            textprintf_ex(buffer, font, x_barre, y_barre - 15, makecol(255,255,255), -1, "VIE P%d", p+1);
+            rectfill(buffer, x_barre, y_barre, x_barre + 200, y_barre + 15, makecol(50, 50, 50));
+
+            int largeur_vie = (jrs[p].vies * 200) / 3;
+            int col_vie = (jrs[p].vies > 1) ? makecol(0, 255, 0) : makecol(255, 0, 0);
+            if (jrs[p].est_mort) largeur_vie = 0;
+
+            rectfill(buffer, x_barre, y_barre, x_barre + largeur_vie, y_barre + 15, col_vie);
+            rect(buffer, x_barre, y_barre, x_barre + 200, y_barre + 15, makecol(255, 255, 255));
+        }
+    } else {
+        textprintf_ex(buffer, font, 20, 40, makecol(255, 255, 0), -1, "OBJECTIF : %d / %d", get_objectif_actuel(), get_objectif_max());
+    }
+
+    int timer = get_timer_debut();
+    if (timer > 0) textprintf_centre_ex(buffer, font, SCREEN_W/2, SCREEN_H/2, makecol(255, 0, 0), makecol(0,0,0), " - %d - ", (timer / 40) + 1);
 }
 
 void dessiner_ecran_defaite() {
@@ -253,4 +298,51 @@ void dessiner_ecran_defaite() {
     rectfill(buffer, cx - 100, cy + 40, cx + 100, cy + 70, makecol(150, 50, 50));
     rect(buffer, cx - 100, cy + 40, cx + 100, cy + 70, makecol(255, 255, 255));
     textout_centre_ex(buffer, font, "RETOUR A LA CARTE", cx, cy + 52, makecol(255, 255, 255), -1);
+}
+
+void dessiner_pause() {
+    dessiner_jeu_en_cours(); // On dessine le jeu derrière
+
+    // Fond sombre transparent
+    set_trans_blender(0, 0, 0, 150);
+    drawing_mode(DRAW_MODE_TRANS, NULL, 0, 0);
+    rectfill(buffer, 0, 0, SCREEN_W, SCREEN_H, makecol(0,0,0));
+    drawing_mode(DRAW_MODE_SOLID, NULL, 0, 0);
+
+    int cx = SCREEN_W / 2; int cy = SCREEN_H / 2;
+
+    textout_centre_ex(buffer, font, "PAUSE", cx, cy - 80, makecol(255, 255, 0), -1);
+
+    // Bouton Reprendre
+    rectfill(buffer, cx - 100, cy - 30, cx + 100, cy, makecol(50, 150, 50));
+    rect(buffer, cx - 100, cy - 30, cx + 100, cy, makecol(255, 255, 255));
+    textout_centre_ex(buffer, font, "REPRENDRE", cx, cy - 18, makecol(255, 255, 255), -1);
+
+    // Bouton Recommencer
+    rectfill(buffer, cx - 100, cy + 20, cx + 100, cy + 50, makecol(200, 100, 0));
+    rect(buffer, cx - 100, cy + 20, cx + 100, cy + 50, makecol(255, 255, 255));
+    textout_centre_ex(buffer, font, "RECOMMENCER", cx, cy + 32, makecol(255, 255, 255), -1);
+
+    // Bouton Quitter
+    rectfill(buffer, cx - 100, cy + 70, cx + 100, cy + 100, makecol(150, 50, 50));
+    rect(buffer, cx - 100, cy + 70, cx + 100, cy + 100, makecol(255, 255, 255));
+    textout_centre_ex(buffer, font, "QUITTER (CARTE)", cx, cy + 82, makecol(255, 255, 255), -1);
+}
+
+void dessiner_ecran_victoire() {
+    dessiner_jeu_en_cours(); // On dessine le jeu derrière
+
+    set_trans_blender(0, 0, 0, 200);
+    drawing_mode(DRAW_MODE_TRANS, NULL, 0, 0);
+    rectfill(buffer, 0, 0, SCREEN_W, SCREEN_H, makecol(0,0,0));
+    drawing_mode(DRAW_MODE_SOLID, NULL, 0, 0);
+
+    int cx = SCREEN_W / 2; int cy = SCREEN_H / 2;
+
+    textout_centre_ex(buffer, font, "NIVEAU TERMINE !", cx, cy - 60, makecol(0, 255, 0), -1);
+    textprintf_centre_ex(buffer, font, cx, cy - 30, makecol(255, 255, 255), -1, "Score de la manche : %d", get_score_actuel());
+
+    rectfill(buffer, cx - 100, cy + 10, cx + 100, cy + 40, makecol(50, 150, 50));
+    rect(buffer, cx - 100, cy + 10, cx + 100, cy + 40, makecol(255, 255, 255));
+    textout_centre_ex(buffer, font, "CONTINUER", cx, cy + 22, makecol(255, 255, 255), -1);
 }

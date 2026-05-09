@@ -48,6 +48,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="init.h" />
+		<Unit filename="logique.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="logique.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -63,6 +67,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="ressources.h" />
+		<Unit filename="sauvegarde.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sauvegarde.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
