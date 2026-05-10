@@ -1,2 +1,5 @@
 o0dragod0o 1 3750
-kylian 5 11400
+kylian 4 11400
+gab 1 0
+vic 1 0
+jul 1 0
